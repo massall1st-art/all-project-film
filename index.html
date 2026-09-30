@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ALL CHAT — Yellow Brutalist</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+:root{
+  --y:#ffc928; --y2:#ffd84d; --b:#090909; --w:#fff;
+  --soft:#f5f4f1; --g:#b8f59a; --p:#e8dcff; --green:#27d45b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:'Baloo 2',system-ui,sans-serif;background:#111;color:#111}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+
+.app{
+  width:min(520px,100%);margin:auto;min-height:100vh;
+  background:var(--soft);overflow:hidden;position:relative;
+}
+
+/* ===== TOP BAR ===== */
+.top{
+  height:76px;background:var(--y);border-bottom:5px solid #000;
+  display:flex;align-items:center;padding:10px 14px;gap:10px;
+  position:sticky;top:0;z-index:30;
+}
+.logo{
+  width:50px;height:50px;border:4px solid #000;border-radius:15px;
+  background:#f3bb12;box-shadow:3px 3px #000;display:grid;place-items:center;
+  font-size:23px;font-weight:800;
+}
+.brand{flex:1}
+.brand h1{margin:0;font-size:24px;line-height:1}
+.brand p{margin:3px 0 0;font:700 9px 'Space Mono';letter-spacing:1px}
+.online{width:9px;height:9px;background:#38c957;border:2px solid #000;border-radius:50%;display:inline-block}
+.ib{
+  width:43px;height:43px;border:4px solid #000;border-radius:13px;
+  background:#fff;box-shadow:3px 3px #000;font-size:20px;
+}
+
+/* ===== VIEWS ===== */
+.view{display:none;min-height:calc(100vh - 76px);padding-bottom:88px}
+.view.active{display:block}
+
+/* ===== HOME ===== */
+.home{padding:14px}
+.search{
+  background:#fff;border:4px solid #000;border-radius:18px;box-shadow:5px 5px #000;
+  padding:10px 13px;display:flex;gap:9px;align-items:center;margin-bottom:13px;
+}
+.search input{border:0;outline:0;flex:1;background:transparent;font:700 13px 'Space Mono'}
+.tabs{display:flex;gap:8px;overflow:auto;padding:2px 1px 12px}
+.tab{
+  white-space:nowrap;border:3px solid #000;background:#fff;border-radius:999px;
+  padding:7px 13px;font:800 10px 'Space Mono';box-shadow:2px 2px #000;
+}
+.tab.on{background:var(--y)}
+.section{display:flex;justify-content:space-between;align-items:center;margin:8px 2px 10px}
+.section h2{font-size:23px;margin:0}
+.section span{font:700 9px 'Space Mono'}
+.chatrow{
+  display:flex;align-items:center;gap:11px;background:#fff;
+  border:4px solid #000;border-radius:20px;padding:10px;margin:11px 0;
+  box-shadow:5px 5px #000;
+}
+.avatar{
+  width:57px;height:57px;flex:none;border:4px solid #000;border-radius:18px;
+  background:var(--p);display:grid;place-items:center;font-weight:800;font-size:22px;
+  box-shadow:3px 3px #000;overflow:hidden;
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.cinfo{flex:1;min-width:0}
+.cinfo strong{display:block;font-size:18px}
+.cinfo small{
+  display:block;font:700 10px 'Space Mono';
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;
+}
+.time{font:700 9px 'Space Mono';align-self:flex-start}
+.badge{background:var(--green);border:3px solid #000;border-radius:999px;padding:3px 7px;font:800 9px 'Space Mono'}
+
+/* ===== FAB ===== */
+.fab{
+  position:fixed;right:max(calc((100% - 520px)/2 + 18px),18px);
+  bottom:78px;width:58px;height:58px;border:4px solid #000;border-radius:18px;
+  background:var(--y);box-shadow:5px 5px #000;font-size:25px;z-index:25;
+}
+
+/* ===== BOTTOM NAV ===== */
+.bottom{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:min(520px,100%);height:74px;background:#000;color:#fff;
+  border-top:4px solid #000;display:flex;z-index:35;
+}
+.nav{
+  flex:1;border:0;background:#000;color:#fff;font:800 10px 'Space Mono';
+  display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;
+}
+.nav.on{color:var(--y)}
+.nav b{font-size:21px}
+
+/* ===== STATUS / CALLS ===== */
+.hero2{padding:16px;background:var(--y);border-bottom:4px solid #000}
+.hero2 h2{margin:0;font-size:30px}
+.hero2 p{margin:2px 0;font:700 9px 'Space Mono'}
+.list{padding:14px}
+.empty{
+  border:4px solid #000;background:#fff;box-shadow:5px 5px #000;
+  border-radius:20px;padding:22px;text-align:center;font:700 11px 'Space Mono';
+}
+.status{
+  display:flex;gap:12px;align-items:center;background:#fff;border:4px solid #000;
+  border-radius:20px;padding:11px;margin:10px 0;box-shadow:4px 4px #000;
+}
+.ring{
+  width:58px;height:58px;border:4px solid #000;border-radius:50%;
+  background:var(--y);display:grid;place-items:center;font-size:22px;
+}
+.status strong{display:block;font-size:18px}
+.status small{font:700 9px 'Space Mono'}
+.calls{padding:14px}
+.callrow{
+  background:#fff;border:4px solid #000;border-radius:20px;padding:13px;
+  box-shadow:5px 5px #000;display:flex;align-items:center;gap:12px;margin:11px 0;
+}
+.callicon{font-size:25px}
+
+/* ===== CHAT HEAD ===== */
+.chathead{
+  height:72px;background:var(--y);border-bottom:4px solid #000;
+  display:flex;align-items:center;padding:8px 10px;gap:9px;
+  position:sticky;top:0;z-index:20;
+}
+.back{border:0;background:transparent;font-size:30px}
+.chathead .avatar{width:49px;height:49px}
+.chathead .name{flex:1}
+.chathead strong{display:block;font-size:18px}
+.chathead small{font:700 8px 'Space Mono'}
+.chathead .ib{width:39px;height:39px;font-size:17px}
+
+/* ===== MESSAGES ===== */
+.messages{
+  padding:13px 10px 105px;background:linear-gradient(#f7f2dd,#fff);
+  min-height:calc(100vh - 148px);
+}
+.msg{
+  max-width:82%;padding:9px 11px;border:3px solid #000;border-radius:16px;
+  margin:7px 0;box-shadow:3px 3px #000;font:700 12px 'Space Mono';position:relative;
+}
+.msg.in{background:#fff;margin-right:auto;border-top-left-radius:5px}
+.msg.out{background:var(--y);margin-left:auto;border-top-right-radius:5px}
+.msg img,.msg video{max-width:100%;border-radius:10px;display:block;margin-top:4px}
+.msg audio{max-width:100%}
+.stamp{font-size:8px;opacity:.7;text-align:right;margin-top:5px}
+.date{
+  text-align:center;background:#000;color:#fff;border-radius:999px;
+  padding:6px 10px;width:max-content;margin:12px auto;font:700 8px 'Space Mono';
+}
+
+/* ===== COMPOSER ===== */
+.composer{
+  position:fixed;bottom:74px;left:50%;transform:translateX(-50%);
+  width:min(520px,100%);background:#000;padding:8px;display:flex;gap:6px;z-index:24;
+}
+.composer input{
+  min-width:0;flex:1;border:3px solid #000;border-radius:15px;
+  padding:10px 11px;outline:0;background:#fff;font:700 11px 'Space Mono';
+}
+.mini{width:42px;border:3px solid #000;border-radius:13px;background:#fff;font-size:18px}
+.send{background:var(--y)}
+.recording{background:#ff6464!important}
+
+/* ===== PANELS ===== */
+.panel{
+  position:fixed;left:50%;bottom:74px;transform:translateX(-50%) translateY(20px);
+  width:min(520px,100%);background:#fff;border:4px solid #000;box-shadow:6px 0 #000;
+  z-index:23;padding:12px;display:none;
+}
+.panel.show{display:block}
+.panelgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tool{
+  border:3px solid #000;border-radius:15px;background:var(--soft);
+  padding:10px 4px;text-align:center;font:800 8px 'Space Mono';box-shadow:2px 2px #000;
+}
+.tool b{display:block;font-size:21px;margin-bottom:4px}
+.stickers{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.sticker{border:3px solid #000;border-radius:13px;background:#fff;font-size:29px;padding:7px}
+
+/* ===== MODALS ===== */
+.modal{
+  position:fixed;inset:0;background:#0009;z-index:70;
+  display:none;align-items:flex-end;justify-content:center;
+}
+.modal.show{display:flex}
+.sheet{
+  width:min(520px,100%);background:var(--soft);border:4px solid #000;
+  border-bottom:0;border-radius:24px 24px 0 0;padding:16px;max-height:86vh;overflow:auto;
+}
+.sheet h2{margin:0 0 10px;font-size:24px}
+.field{
+  width:100%;padding:12px;border:3px solid #000;border-radius:13px;
+  background:#fff;outline:0;margin:6px 0;font:700 11px 'Space Mono';
+}
+.rowbtn{
+  width:100%;border:4px solid #000;background:var(--y);padding:12px;
+  border-radius:14px;box-shadow:3px 3px #000;font:800 11px 'Space Mono';margin-top:7px;
+}
+.camera{background:#111;padding:10px}
+.camera video{width:100%;border:4px solid #000;border-radius:15px;background:#000}
+.close{float:right;background:#fff;border:3px solid #000;border-radius:10px;padding:4px 9px}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;z-index:100;bottom:92px;left:50%;transform:translateX(-50%);
+  background:#000;color:#fff;border:3px solid #fff;border-radius:12px;
+  padding:10px 14px;font:700 9px 'Space Mono';display:none;
+}
+.toast.show{display:block}
+
+/* ===== AUTH ===== */
+.authgate{
+  position:fixed;inset:0;background:#090909;z-index:200;
+  display:flex;align-items:center;justify-content:center;padding:18px;
+}
+.authcard{
+  width:min(520px,100%);background:var(--soft);border:5px solid #000;
+  box-shadow:9px 9px var(--y);padding:22px;border-radius:22px;
+}
+.authcard .logo{margin-bottom:12px}
+.authcard h2{font-size:30px;margin:0}
+.authcard p{font:700 10px 'Space Mono';line-height:1.6}
+.authcard .field{margin:7px 0}
+.authstep{display:none}
+.authstep.active{display:block}
+.danger{background:#ff7777!important}
+.auth-status{
+  display:none;margin:10px 0;padding:10px 12px;border:3px solid #000;
+  border-radius:12px;background:#fff0a8;font:800 9px 'Space Mono';
+  line-height:1.55;white-space:pre-wrap;
+}
+.auth-status.show{display:block}
+.auth-status.error{background:#ffd2d2}
+.auth-status.ok{background:#dfffbf}
+.otp-title{font:900 14px 'Space Mono';margin:8px 0 2px}
+.otp-sub{font:700 9px 'Space Mono';opacity:.7;margin:0 0 8px}
+.otp-input{font-size:20px!important;letter-spacing:7px;text-align:center}
+.otp-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.otp-actions .rowbtn{margin-top:7px}
+.muted{opacity:.65;font:700 9px 'Space Mono'}
+.userline{
+  display:flex;gap:10px;align-items:center;border:3px solid #000;
+  background:#fff;padding:10px;border-radius:14px;margin:8px 0;
+}
+.dangerbtn{background:#ff7777!important}
+.msg-actions{display:flex;gap:5px;margin-top:6px}
+.msg-actions button{
+  border:2px solid #000;background:#fff;border-radius:8px;
+  padding:2px 6px;font-size:9px;
+}
+.msg-meta{font-size:8px;opacity:.7;margin-top:4px}
+.hidden{display:none!important}
+
+/* ===== BRAND LOGO IMAGE ===== */
+.brand-logo-img{width:100%;height:100%;display:block;object-fit:cover;border-radius:10px}
+.authcard .logo{
+  width:78px;height:78px;border-radius:20px;padding:3px;
+  background:#000;overflow:hidden;
+}
+.authcard .brand-logo-img{border-radius:14px}
+.top .logo{
+  width:56px;height:56px;border-radius:16px;padding:2px;
+  background:#000;overflow:hidden;
+}
+.top .brand-logo-img{border-radius:12px}
+
+/* ===== SPLASH ===== */
+.splash-screen{
+  position:fixed;inset:0;background:#090909;z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .45s ease,visibility .45s ease;
+}
+.splash-screen.hide{opacity:0;visibility:hidden;pointer-events:none}
+.splash-inner{text-align:center;color:#fff}
+.splash-logo{
+  width:150px;height:150px;margin:auto;border:5px solid #000;
+  border-radius:34px;background:#000;box-shadow:9px 9px var(--y);
+  overflow:hidden;
+}
+.splash-logo img{width:100%;height:100%;object-fit:cover}
+.splash-title{margin:18px 0 0;font-size:38px;color:var(--y);letter-spacing:1px}
+.splash-sub{font:700 9px 'Space Mono';letter-spacing:2px;opacity:.8}
+
+/* ===== UNIFIED CONTROL FEEL ===== */
+button,.tab,.tool,.mini,.ib,.nav,.rowbtn,.fab,.back,.close{
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .12s ease,box-shadow .12s ease,background .12s ease;
+}
+button:active,.tab:active,.tool:active,.mini:active,.ib:active,
+.nav:active,.rowbtn:active,.fab:active{
+  transform:translate(2px,2px);
+  box-shadow:1px 1px #000 !important;
+}
+.top .ib,.chathead .ib{background:var(--y);border-color:#000;color:#000;box-shadow:3px 3px #000}
+.top .ib:hover,.chathead .ib:hover{background:var(--y2)}
+.tab{background:#fff;color:#000;border:3px solid #000;box-shadow:3px 3px #000}
+.tab.on,.tab:hover{background:var(--y)}
+.bottom{background:#000;border-top:4px solid #000}
+.nav{background:#000;color:#fff;border-top:4px solid transparent}
+.nav.on{color:#000;background:var(--y);border-top-color:#000}
+.nav b{color:inherit}
+.fab{background:var(--y);color:#000;border:4px solid #000;box-shadow:5px 5px #000}
+.fab:hover{background:var(--y2)}
+.panel{background:var(--y);border:4px solid #000;box-shadow:6px 6px #000;border-radius:18px 18px 0 0}
+.panelgrid{gap:9px}
+.tool{background:#fff;color:#000;border:3px solid #000;box-shadow:3px 3px #000;min-height:70px}
+.tool:hover{background:var(--y2)}
+.tool b{color:#000}
+.composer{background:var(--y);border-top:4px solid #000}
+.composer input{border:3px solid #000;box-shadow:2px 2px #000}
+.mini{background:#fff;color:#000;border:3px solid #000;box-shadow:3px 3px #000}
+.mini.send{background:#000;color:var(--y);border-color:#000}
+.mini:hover{background:var(--y2)}
+.mini.send:hover{background:#111}
+.rowbtn{background:var(--y);color:#000;border:4px solid #000;box-shadow:4px 4px #000}
+.rowbtn:hover{background:var(--y2)}
+.close{background:var(--y);color:#000;border:3px solid #000;box-shadow:2px 2px #000}
+.close:hover{background:var(--y2)}
+.back{color:#000;text-shadow:2px 2px var(--y2)}
+.dangerbtn{background:#fff!important;color:#000!important;border:3px solid #000!important;box-shadow:2px 2px #000!important}
+.dangerbtn:hover{background:#ffd6d6!important}
+.sticker{background:#fff;border:3px solid #000;box-shadow:2px 2px #000}
+.sticker:hover{background:var(--y)}
+.authcard .rowbtn{background:var(--y)}
+.authcard .rowbtn:hover{background:var(--y2)}
+.status .rowbtn{margin-top:8px}
+
+/* ===== PROFILE / SETTINGS ===== */
+.profileHero{
+  background:var(--y);border:4px solid #000;border-radius:20px;padding:16px;
+  margin:2px 0 14px;box-shadow:5px 5px #000;text-align:center;
+}
+.profileHero .profileBig{
+  width:104px;height:104px;margin:0 auto 10px;border:5px solid #000;
+  border-radius:50%;background:#fff;display:grid;place-items:center;
+  font-size:42px;font-weight:800;overflow:hidden;box-shadow:5px 5px #000;
+}
+.profileHero .profileBig img{width:100%;height:100%;object-fit:cover}
+.profileHero h2{margin:0;font-size:27px}
+.profileHero p{margin:2px 0 0;font:700 10px 'Space Mono';opacity:.8}
+.settingGroup{margin:14px 0}
+.settingTitle{font:800 9px 'Space Mono';letter-spacing:1px;margin:0 0 6px 4px;opacity:.65}
+.settingRow{
+  width:100%;display:flex;align-items:center;gap:12px;text-align:left;
+  background:#fff;border:3px solid #000;border-radius:14px;padding:11px 12px;
+  margin:7px 0;box-shadow:3px 3px #000;
+}
+.settingRow .sicon{
+  width:34px;height:34px;flex:none;border:3px solid #000;border-radius:10px;
+  background:var(--y);display:grid;place-items:center;font-size:18px;
+}
+.settingRow .stxt{flex:1;min-width:0}
+.settingRow strong{display:block;font-size:14px}
+.settingRow small{display:block;color:#666;font:700 9px 'Space Mono';margin-top:2px;line-height:1.35}
+.settingRow .chev{font-size:21px;font-weight:900}
+.settingToggle{
+  appearance:none;width:46px;height:26px;border:3px solid #000;border-radius:999px;
+  background:#fff;position:relative;flex:none;
+}
+.settingToggle:before{
+  content:'';position:absolute;width:16px;height:16px;left:2px;top:2px;
+  background:#000;border-radius:50%;transition:.15s;
+}
+.settingToggle:checked{background:var(--y)}
+.settingToggle:checked:before{left:22px}
+.profileEdit{
+  border:4px solid #000;background:var(--y);border-radius:16px;padding:14px;
+  box-shadow:4px 4px #000;margin-bottom:12px;
+}
+.profileEdit .editAvatar{
+  width:88px;height:88px;margin:0 auto 10px;border:4px solid #000;border-radius:50%;
+  background:#fff;display:grid;place-items:center;overflow:hidden;font-size:34px;font-weight:800;
+}
+.profileEdit .editAvatar img{width:100%;height:100%;object-fit:cover}
+.settingBack{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.settingBack button{
+  border:3px solid #000;background:var(--y);box-shadow:3px 3px #000;
+  border-radius:10px;width:40px;height:40px;font-size:24px;
+}
+.settingCard{
+  background:#fff;border:3px solid #000;border-radius:14px;padding:12px;
+  margin:8px 0;box-shadow:3px 3px #000;
+}
+.settingCard h3{margin:0 0 7px;font-size:15px}
+.optionGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.optionBtn{
+  border:3px solid #000;background:#fff;border-radius:12px;padding:10px;
+  font:800 9px 'Space Mono';box-shadow:2px 2px #000;
+}
+.optionBtn.on{background:var(--y)}
+.dangerRow{background:#fff;border-color:#000}
+.dangerRow .sicon{background:#fff}
+.profileMediaInput{display:none}
+@media(max-width:380px){
+  .settingRow{padding:10px}
+  .settingRow strong{font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== SPLASH ===================== -->
+<div id="splashScreen" class="splash-screen">
+  <div class="splash-inner">
+    <div class="splash-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+        <rect width="100" height="100" rx="22" fill="#ffc928"/>
+        <path d="M25 35 h50 v30 a8 8 0 0 1 -8 8 H42 l-12 10 v-10 h-5 a8 8 0 0 1 -8 -8 z"
+              fill="#000" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
+        <circle cx="40" cy="52" r="4" fill="#ffc928"/>
+        <circle cx="52" cy="52" r="4" fill="#ffc928"/>
+        <circle cx="64" cy="52" r="4" fill="#ffc928"/>
+      </svg>
+    </div>
+    <div class="splash-title">ALL CHAT</div>
+    <div class="splash-sub">ONLINE • CONNECT • TOGETHER</div>
+  </div>
+</div>
+
+<!-- ===================== AUTH GATE ===================== -->
+<div id="authGate" class="authgate">
+  <div class="authcard">
+    <div class="logo">
+      <svg class="brand-logo-img" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="22" fill="#ffc928"/>
+        <path d="M25 35 h50 v30 a8 8 0 0 1 -8 8 H42 l-12 10 v-10 h-5 a8 8 0 0 1 -8 -8 z" fill="#000"/>
+        <circle cx="40" cy="52" r="4" fill="#ffc928"/>
+        <circle cx="52" cy="52" r="4" fill="#ffc928"/>
+        <circle cx="64" cy="52" r="4" fill="#ffc928"/>
+      </svg>
+    </div>
+    <h2>ALL CHAT</h2>
+    <p class="muted">Masuk dengan nomor telepon. Kami akan mengirim kode OTP.</p>
+
+    <!-- Step 1: Phone -->
+    <div id="authStepPhone" class="authstep active">
+      <input id="authPhone" class="field" type="tel" placeholder="+62 812 3456 7890" inputmode="tel" autocomplete="tel">
+      <button id="btnSendOtp" class="rowbtn">KIRIM OTP</button>
+      <div id="authStatusPhone" class="auth-status"></div>
+      <p class="muted" style="margin-top:10px">Dengan melanjutkan, kamu menyetujui Syarat &amp; Ketentuan ALL CHAT.</p>
+    </div>
+
+    <!-- Step 2: OTP -->
+    <div id="authStepOtp" class="authstep">
+      <div class="otp-title">Verifikasi OTP</div>
+      <p class="otp-sub">Kode dikirim ke <span id="otpPhoneLabel">-</span></p>
+      <input id="authOtp" class="field otp-input" type="text" inputmode="numeric" maxlength="6" placeholder="● ● ● ● ● ●" autocomplete="one-time-code">
+      <div class="otp-actions">
+        <button id="btnVerifyOtp" class="rowbtn">VERIFIKASI</button>
+        <button id="btnResendOtp" class="rowbtn danger">KIRIM ULANG</button>
+      </div>
+      <button id="btnBackPhone" class="rowbtn" style="background:#fff">← GANTI NOMOR</button>
+      <div id="authStatusOtp" class="auth-status"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MAIN APP ===================== -->
+<div id="mainApp" class="app hidden">
+
+  <!-- ============ TOP BAR ============ -->
+  <div class="top">
+    <div class="logo">
+      <svg class="brand-logo-img" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="22" fill="#ffc928"/>
+        <path d="M25 35 h50 v30 a8 8 0 0 1 -8 8 H42 l-12 10 v-10 h-5 a8 8 0 0 1 -8 -8 z" fill="#000"/>
+        <circle cx="40" cy="52" r="4" fill="#ffc928"/>
+        <circle cx="52" cy="52" r="4" fill="#ffc928"/>
+        <circle cx="64" cy="52" r="4" fill="#ffc928"/>
+      </svg>
+    </div>
+    <div class="brand">
+      <h1>ALL CHAT</h1>
+      <p><span class="online"></span> ONLINE • CONNECT</p>
+    </div>
+    <button class="ib" id="btnTopSearch" title="Cari">🔍</button>
+    <button class="ib" id="btnTopMenu" title="Menu">☰</button>
+  </div>
+
+  <!-- ============ VIEW: HOME ============ -->
+  <section id="viewHome" class="view active">
+    <div class="home">
+      <div class="search">
+        <span>🔍</span>
+        <input id="searchInput" placeholder="Cari chat atau kontak...">
+      </div>
+
+      <div class="tabs" id="homeTabs">
+        <button class="tab on" data-tab="all">SEMUA</button>
+        <button class="tab" data-tab="unread">BELUM DIBACA</button>
+        <button class="tab" data-tab="groups">GRUP</button>
+        <button class="tab" data-tab="archived">ARSIP</button>
+      </div>
+
+      <div class="section">
+        <h2>Chat</h2>
+        <span id="homeChatCount">0 CHAT</span>
+      </div>
+
+      <div id="chatList"></div>
+    </div>
+    <button class="fab" id="btnNewChat" title="Chat Baru">＋</button>
+  </section>
+
+  <!-- ============ VIEW: STATUS ============ -->
+  <section id="viewStatus" class="view">
+    <div class="hero2">
+      <h2>Status</h2>
+      <p>UPDATE TERBARU 24 JAM</p>
+    </div>
+    <div class="list" id="statusList">
+      <div class="status">
+        <div class="ring">＋</div>
+        <div>
+          <strong>Status Saya</strong>
+          <small>Ketuk untuk menambahkan update</small>
+        </div>
+      </div>
+      <div class="empty" style="margin-top:14px">Belum ada status dari kontak lain.</div>
+    </div>
+  </section>
+
+  <!-- ============ VIEW: CALLS ============ -->
+  <section id="viewCalls" class="view">
+    <div class="hero2">
+      <h2>Panggilan</h2>
+      <p>RIWAYAT PANGGILAN</p>
+    </div>
+    <div class="calls" id="callsList">
+      <div class="empty">Belum ada riwayat panggilan.</div>
+    </div>
+  </section>
+
+  <!-- ============ VIEW: PROFILE ============ -->
+  <section id="viewProfile" class="view">
+    <div class="home">
+
+      <!-- === MAIN PROFILE === -->
+      <div id="profileMain">
+        <div class="profileHero">
+          <div class="profileBig" id="profileBigAvatar">🙂</div>
+          <h2 id="profileName">Pengguna</h2>
+          <p id="profilePhone">+62 ...</p>
+        </div>
+
+        <div class="settingGroup">
+          <div class="settingTitle">AKUN</div>
+          <button class="settingRow" data-nav="editProfile">
+            <div class="sicon">✏️</div>
+            <div class="stxt"><strong>Edit Profil</strong><small>Nama, foto, dan info</small></div>
+            <div class="chev">›</div>
+          </button>
+          <button class="settingRow" data-nav="privacy">
+            <div class="sicon">🔒</div>
+            <div class="stxt"><strong>Privasi</strong><small>Kontrol siapa yang bisa melihat</small></div>
+            <div class="chev">›</div>
+          </button>
+          <button class="settingRow" data-nav="security">
+            <div class="sicon">🛡️</div>
+            <div class="stxt"><strong>Keamanan</strong><small>Verifikasi 2 langkah &amp; lainnya</small></div>
+            <div class="chev">›</div>
+          </button>
+        </div>
+
+        <div class="settingGroup">
+          <div class="settingTitle">PREFERENSI</div>
+          <button class="settingRow" data-nav="notifications">
+            <div class="sicon">🔔</div>
+            <div class="stxt"><strong>Notifikasi</strong><small>Pesan, grup, dan panggilan</small></div>
+            <div class="chev">›</div>
+          </button>
+          <button class="settingRow" data-nav="appearance">
+            <div class="sicon">🎨</div>
+            <div class="stxt"><strong>Tampilan</strong><small>Tema dan wallpaper</small></div>
+            <div class="chev">›</div>
+          </button>
+          <button class="settingRow" data-nav="storage">
+            <div class="sicon">💾</div>
+            <div class="stxt"><strong>Penyimpanan</strong><small>Kelola data &amp; media</small></div>
+            <div class="chev">›</div>
+          </button>
+          <button class="settingRow" data-nav="language">
+            <div class="sicon">🌐</div>
+            <div class="stxt"><strong>Bahasa</strong><small>Indonesia</small></div>
+            <div class="chev">›</div>
+          </button>
+        </div>
+
+        <div class="settingGroup">
+          <div class="settingTitle">LAINNYA</div>
+          <button class="settingRow" data-nav="help">
+            <div class="sicon">❓</div>
+            <div class="stxt"><strong>Bantuan</strong><small>FAQ &amp; dukungan</small></div>
+            <div class="chev">›</div>
+          </button>
+          <button class="settingRow" data-nav="about">
+            <div class="sicon">ℹ️</div>
+            <div class="stxt"><strong>Tentang</strong><small>Versi 1.0.0</small></div>
+            <div class="chev">›</div>
+          </button>
+          <button class="settingRow dangerRow" id="btnLogout">
+            <div class="sicon">🚪</div>
+            <div class="stxt"><strong>Keluar</strong><small>Logout dari akun ini</small></div>
+            <div class="chev">›</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- === SUB-SETTINGS VIEWS === -->
+      <div id="profileSub" class="hidden"></div>
+    </div>
+  </section>
+
+  <!-- ============ VIEW: CHAT ============ -->
+  <section id="viewChat" class="view">
+    <div class="chathead">
+      <button class="back" id="btnChatBack">‹</button>
+      <div class="avatar" id="chatAvatar">A</div>
+      <div class="name">
+        <strong id="chatName">Nama</strong>
+        <small id="chatStatus">online</small>
+      </div>
+      <button class="ib" id="btnChatCall">📞</button>
+      <button class="ib" id="btnChatVideo">🎥</button>
+      <button class="ib" id="btnChatMore">⋯</button>
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="composer">
+      <button class="mini" id="btnAttach">＋</button>
+      <input id="msgInput" placeholder="Tulis pesan...">
+      <button class="mini" id="btnEmoji">😊</button>
+      <button class="mini send" id="btnSend">➤</button>
+    </div>
+
+    <div class="panel" id="attachPanel">
+      <div class="panelgrid">
+        <button class="tool" data-attach="image"><b>🖼️</b>Gambar</button>
+        <button class="tool" data-attach="camera"><b>📷</b>Kamera</button>
+        <button class="tool" data-attach="video"><b>🎬</b>Video</button>
+        <button class="tool" data-attach="audio"><b>🎤</b>Audio</button>
+        <button class="tool" data-attach="doc"><b>📎</b>Dokumen</button>
+        <button class="tool" data-attach="location"><b>📍</b>Lokasi</button>
+        <button class="tool" data-attach="contact"><b>👤</b>Kontak</button>
+        <button class="tool" data-attach="sticker"><b>😀</b>Stiker</button>
+      </div>
+      <div class="stickers" id="stickerGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ BOTTOM NAV ============ -->
+  <nav class="bottom">
+    <button class="nav on" data-view="viewHome"><b>💬</b>CHAT</button>
+    <button class="nav" data-view="viewStatus"><b>◎</b>STATUS</button>
+    <button class="nav" data-view="viewCalls"><b>📞</b>PANGGILAN</button>
+    <button class="nav" data-view="viewProfile"><b>👤</b>PROFIL</button>
+  </nav>
+</div>
+
+<!-- ===================== MODALS ===================== -->
+<div class="modal" id="modalGeneric">
+  <div class="sheet" id="modalSheet">
+    <button class="close" id="modalClose">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- Camera modal -->
+<div class="modal" id="modalCamera">
+  <div class="sheet camera">
+    <button class="close" id="cameraClose">✕</button>
+    <h2 style="color:#fff">Kamera</h2>
+    <video id="cameraVideo" autoplay playsinline></video>
+    <button class="rowbtn" id="cameraShot" style="margin-top:10px">📸 AMBIL FOTO</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================
+   ALL CHAT — Yellow Brutalist
+   Front-end only (localStorage based)
+===================================================== */
+(function(){
+'use strict';
+
+/* ---------- Helpers ---------- */
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const LS = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+const uid = () => 'id-' + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+const now = () => Date.now();
+const fmtTime = ts => {
+  const d = new Date(ts);
+  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+};
+const fmtDay = ts => {
+  const d = new Date(ts);
+  const today = new Date();
+  const isToday = d.toDateString() === today.toDateString();
+  if (isToday) return 'Hari ini';
+  return d.toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'});
+};
+const esc = s => String(s||'').replace(/[&<>"']/g, c => ({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
+
+/* ---------- Toast ---------- */
+let toastTimer = null;
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* =====================================================
+   DATA LAYER
+===================================================== */
+const DB = {
+  user: null,
+  chats: null,
+  messages: null,
+  settings: null
+};
+
+const DEFAULT_SETTINGS = {
+  notifications: { messages:true, groups:true, calls:true, sounds:true, preview:true },
+  privacy: { lastSeen:'contacts', profilePhoto:'contacts', about:'contacts', readReceipts:true, status:'contacts' },
+  security: { twoFactor:false, biometric:false, showSecurityNotifications:true },
+  appearance: { theme:'light', wallpaper:'default', fontSize:'normal', bubbleStyle:'brutalist' },
+  language: 'id',
+  storage: { autoDownload:true, saveToGallery:false }
+};
+
+const STICKERS = ['😀','😂','😍','🥳','😎','🤔','😴','🤯','🥺','😡','👍','👏','🙏','💪','🔥','✨','❤️','💛','💚','💙','🎉','🎊','🍕','☕','🐱','🐶','🌈','⚡','💯','🆗'];
+
+function loadDB(){
+  DB.user     = LS.get('allchat.user', null);
+  DB.chats    = LS.get('allchat.chats', null);
+  DB.messages = LS.get('allchat.messages', null);
+  DB.settings = LS.get('allchat.settings', null);
+
+  if (!DB.chats){
+    DB.chats = seedChats();
+    LS.set('allchat.chats', DB.chats);
+  }
+  if (!DB.messages){
+    DB.messages = seedMessages();
+    LS.set('allchat.messages', DB.messages);
+  }
+  if (!DB.settings){
+    DB.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+    LS.set('allchat.settings', DB.settings);
+  }
+}
+function saveChats(){ LS.set('allchat.chats', DB.chats); }
+function saveMessages(){ LS.set('allchat.messages', DB.messages); }
+function saveSettings(){ LS.set('allchat.settings', DB.settings); }
+function saveUser(){ LS.set('allchat.user', DB.user); }
+
+function seedChats(){
+  const t = now();
+  return [
+    { id:'c1', name:'Ayu Prameswari',  initials:'AP', color:'#e8dcff', last:'Sampai jumpa besok ya!', time:t-2*60*1000,    unread:2, pinned:true,  archived:false, group:false, online:true },
+    { id:'c2', name:'Tim Produk',      initials:'TP', color:'#b8f59a', last:'Rian: slide-nya sudah aku update', time:t-18*60*1000, unread:5, pinned:false, archived:false, group:true,  online:false },
+    { id:'c3', name:'Bagas',           initials:'BG', color:'#ffd84d', last:'Oke, nanti aku telepon', time:t-45*60*1000,  unread:0, pinned:false, archived:false, group:false, online:true },
+    { id:'c4', name:'Sinta & Keluarga',initials:'SK', color:'#ffc9c9', last:'Foto: 3 media',           time:t-3*3600*1000, unread:0, pinned:false, archived:false, group:true,  online:false },
+    { id:'c5', name:'Dimas',           initials:'DM', color:'#c9e4ff', last:'Ditunggu ya bro',         time:t-26*3600*1000,unread:0, pinned:false, archived:true,  group:false, online:false }
+  ];
+}
+function seedMessages(){
+  const t = now();
+  return {
+    c1: [
+      { id:uid(), side:'in',  text:'Hai, kamu jadi ikut meeting besok?', ts:t-30*60*1000, status:'read' },
+      { id:uid(), side:'out', text:'Jadi dong! Jam berapa?',              ts:t-29*60*1000, status:'read' },
+      { id:uid(), side:'in',  text:'Jam 9 pagi di ruang rapat utama',     ts:t-28*60*1000, status:'read' },
+      { id:uid(), side:'out', text:'Siap, aku datang tepat waktu 👍',      ts:t-27*60*1000, status:'read' },
+      { id:uid(), side:'in',  text:'Sampai jumpa besok ya!',              ts:t-2*60*1000,  status:'delivered' }
+    ],
+    c2: [
+      { id:uid(), side:'in',  text:'Rian: teman-teman, tolong review ya', ts:t-60*60*1000, status:'read' },
+      { id:uid(), side:'in',  text:'Rian: slide-nya sudah aku update',    ts:t-18*60*1000, status:'delivered' }
+    ],
+    c3: [
+      { id:uid(), side:'out', text:'Bagas, nanti malam jadi?',            ts:t-2*3600*1000, status:'read' },
+      { id:uid(), side:'in',  text:'Oke, nanti aku telepon',              ts:t-45*60*1000,  status:'read' }
+    ],
+    c4: [
+      { id:uid(), side:'in',  text:'Foto keluarga terbaru 📸',            ts:t-3*3600*1000, status:'read' }
+    ],
+    c5: [
+      { id:uid(), side:'in',  text:'Ditunggu ya bro',                     ts:t-26*3600*1000,status:'read' }
+    ]
+  };
+}
+
+/* =====================================================
+   AUTH (OTP)
+===================================================== */
+const AUTH = {
+  phone: '',
+  otp: '',
+  ttlTimer: null,
+  pendingPhone: '',
+
+  init(){
+    $('#btnSendOtp').addEventListener('click', () => this.sendOtp());
+    $('#btnVerifyOtp').addEventListener('click', () => this.verifyOtp());
+    $('#btnResendOtp').addEventListener('click', () => this.resendOtp());
+    $('#btnBackPhone').addEventListener('click', () => this.goStep('phone'));
+    $('#authPhone').addEventListener('keydown', e => { if (e.key === 'Enter') this.sendOtp(); });
+    $('#authOtp').addEventListener('keydown', e => { if (e.key === 'Enter') this.verifyOtp(); });
+  },
+
+  setStatus(el, msg, type=''){
+    el.textContent = msg;
+    el.className = 'auth-status show ' + type;
+  },
+  clearStatus(el){ el.className = 'auth-status'; el.textContent=''; },
+
+  goStep(step){
+    $('#authStepPhone').classList.toggle('active', step === 'phone');
+    $('#authStepOtp').classList.toggle('active', step === 'otp');
+  },
+
+  normalizePhone(v){
+    let s = String(v||'').replace(/[^\d+]/g,'');
+    if (s && !s.startsWith('+')) s = '+62' + s.replace(/^0+/,'');
+    return s;
+  },
+
+  sendOtp(){
+    const status = $('#authStatusPhone');
+    this.clearStatus(status);
+    const raw = $('#authPhone').value.trim();
+    const phone = this.normalizePhone(raw);
+
+    if (!/^\+\d{8,15}$/.test(phone)){
+      this.setStatus(status, '❌ Nomor telepon tidak valid.\nContoh: +6281234567890', 'error');
+      return;
+    }
+
+    const otp = Math.floor(100000 + Math.random()*900000).toString();
+    this.otp = otp;
+    this.phone = phone;
+    this.pendingPhone = phone;
+
+    // Simulasi: tampilkan OTP
+    this.setStatus(status, `✅ OTP terkirim ke ${phone}.\n(Demo OTP: ${otp})`, 'ok');
+
+    $('#otpPhoneLabel').textContent = phone;
+    $('#authOtp').value = '';
+    this.goStep('otp');
+
+    // Auto-hide
+    this.startTtl(60);
+  },
+
+  startTtl(seconds){
+    clearInterval(this.ttlTimer);
+    const el = $('#authStatusOtp');
+    let s = seconds;
+    this.setStatus(el, `📨 Kode berlaku ${s} detik.`);
+    this.ttlTimer = setInterval(() => {
+      s--;
+      if (s <= 0){
+        clearInterval(this.ttlTimer);
+        this.setStatus(el, '⏰ Kode kedaluwarsa. Klik KIRIM ULANG.', 'error');
+      } else {
+        this.setStatus(el, `📨 Kode berlaku ${s} detik.`);
+      }
+    }, 1000);
+  },
+
+  resendOtp(){
+    const status = $('#authStatusOtp');
+    const otp = Math.floor(100000 + Math.random()*900000).toString();
+    this.otp = otp;
+    this.setStatus(status, `✅ OTP baru dikirim ke ${this.pendingPhone}.\n(Demo OTP: ${otp})`, 'ok');
+    this.startTtl(60);
+  },
+
+  verifyOtp(){
+    const status = $('#authStatusOtp');
+    const val = $('#authOtp').value.trim();
+    if (val.length !== 6){
+      this.setStatus(status, '❌ Masukkan 6 digit kode OTP.', 'error');
+      return;
+    }
+    if (val !== this.otp){
+      this.setStatus(status, '❌ Kode OTP salah. Coba lagi.', 'error');
+      return;
+    }
+    clearInterval(this.ttlTimer);
+    this.setStatus(status, '✅ Verifikasi berhasil. Masuk...', 'ok');
+
+    DB.user = {
+      phone: this.phone,
+      name: 'Pengguna ' + this.phone.slice(-4),
+      initials: 'U',
+      color: '#ffc928',
+      avatar: '',
+      about: 'Tersedia',
+      createdAt: now()
+    };
+    saveUser();
+
+    setTimeout(() => {
+      $('#authGate').classList.add('hidden');
+      $('#mainApp').classList.remove('hidden');
+      APP.boot();
+    }, 600);
+  },
+
+  checkExisting(){
+    if (DB.user){
+      $('#authGate').classList.add('hidden');
+      $('#mainApp').classList.remove('hidden');
+      APP.boot();
+    } else {
+      this.goStep('phone');
+    }
+  }
+};
+
+/* =====================================================
+   APP
+===================================================== */
+const APP = {
+  state: {
+    currentView: 'viewHome',
+    currentChat: null,
+    homeTab: 'all',
+    search: '',
+    recording: false,
+    mediaRecorder: null,
+    recordedChunks: [],
+    mediaStream: null,
+    cameraStream: null
+  },
+
+  boot(){
+    this.bindNav();
+    this.bindHome();
+    this.bindChat();
+    this.bindProfile();
+    this.bindModal();
+    this.bindCamera();
+    this.renderProfile();
+    this.renderChats();
+    this.renderStickers();
+  },
+
+  /* ---------- Navigation ---------- */
+  bindNav(){
+    $$('.nav').forEach(btn => {
+      btn.addEventListener('click', () => this.showView(btn.dataset.view));
+    });
+  },
+
+  showView(id){
+    $$('.view').forEach(v => v.classList.toggle('active', v.id === id));
+    $$('.nav').forEach(n => n.classList.toggle('on', n.dataset.view === id));
+    this.state.currentView = id;
+    if (id === 'viewProfile') this.showProfileMain();
+    if (id === 'viewChat') this.scrollMessages();
+  },
+
+  /* ---------- HOME ---------- */
+  bindHome(){
+    $('#homeTabs').addEventListener('click', e => {
+      const t = e.target.closest('.tab');
+      if (!t) return;
+      $$('#homeTabs .tab').forEach(x => x.classList.toggle('on', x === t));
+      this.state.homeTab = t.dataset.tab;
+      this.renderChats();
+    });
+
+    $('#searchInput').addEventListener('input', e => {
+      this.state.search = e.target.value.toLowerCase();
+      this.renderChats();
+    });
+
+    $('#btnNewChat').addEventListener('click', () => toast('Fitur chat baru segera hadir'));
+    $('#btnTopSearch').addEventListener('click', () => $('#searchInput').focus());
+    $('#btnTopMenu').addEventListener('click', () => toast('Menu pengaturan di tab Profil'));
+  },
+
+  renderChats(){
+    const list = $('#chatList');
+    const tab = this.state.homeTab;
+    const q = this.state.search;
+
+    let arr = DB.chats.slice();
+    if (tab === 'unread')   arr = arr.filter(c => c.unread > 0);
+    if (tab === 'groups')   arr = arr.filter(c => c.group);
+    if (tab === 'archived') arr = arr.filter(c => c.archived);
+    else                    arr = arr.filter(c => !c.archived);
+
+    if (q){
+      arr = arr.filter(c =>
+        c.name.toLowerCase().includes(q) ||
+        (c.last||'').toLowerCase().includes(q)
+      );
+    }
+
+    arr.sort((a,b) => (b.pinned?1:0)-(a.pinned?1:0) || b.time - a.time);
+
+    $('#homeChatCount').textContent = arr.length + ' CHAT';
+
+    if (!arr.length){
+      list.innerHTML = `<div class="empty">Belum ada chat di kategori ini.</div>`;
+      return;
+    }
+
+    list.innerHTML = arr.map(c => `
+      <div class="chatrow" data-id="${c.id}">
+        <div class="avatar" style="background:${c.color}">
+          ${c.avatar ? `<img src="${esc(c.avatar)}" alt="">` : esc(c.initials)}
+        </div>
+        <div class="cinfo">
+          <strong>${esc(c.name)}</strong>
+          <small>${esc(c.last||'')}</small>
+        </div>
+        <div style="text-align:right;display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+          <div class="time">${fmtTime(c.time)}</div>
+          ${c.unread ? `<div class="badge">${c.unread}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+
+    $$('#chatList .chatrow').forEach(row => {
+      row.addEventListener('click', () => this.openChat(row.dataset.id));
+    });
+  },
+
+  /* ---------- CHAT ---------- */
+  bindChat(){
+    $('#btnChatBack').addEventListener('click', () => {
+      this.stopRecording(true);
+      this.showView('viewHome');
+    });
+
+    $('#btnSend').addEventListener('click', () => this.sendText());
+    $('#msgInput').addEventListener('keydown', e => { if (e.key === 'Enter') this.sendText(); });
+    $('#btnAttach').addEventListener('click', () => $('#attachPanel').classList.toggle('show'));
+    $('#btnEmoji').addEventListener('click', () => {
+      $('#attachPanel').classList.add('show');
+      $('#stickerGrid').scrollIntoView({behavior:'smooth'});
+    });
+
+    $$('#attachPanel .tool').forEach(t => {
+      t.addEventListener('click', () => this.handleAttach(t.dataset.attach));
+    });
+
+    $('#stickerGrid').addEventListener('click', e => {
+      const s = e.target.closest('.sticker');
+      if (!s) return;
+      this.pushMessage({ side:'out', text:s.textContent, ts:now(), status:'sent' });
+      $('#attachPanel').classList.remove('show');
+    });
+
+    $('#btnChatCall').addEventListener('click', () => toast('Memanggil...'));
+    $('#btnChatVideo').addEventListener('click', () => toast('Video call...'));
+    $('#btnChatMore').addEventListener('click', () => this.chatMenu());
+  },
+
+  openChat(id){
+    const c = DB.chats.find(x => x.id === id);
+    if (!c) return;
+    this.state.currentChat = id;
+    c.unread = 0;
+    saveChats();
+
+    $('#chatName').textContent = c.name;
+    $('#chatStatus').textContent = c.online ? 'online' : 'terakhir dilihat baru-baru ini';
+    const av = $('#chatAvatar');
+    av.style.background = c.color;
+    av.innerHTML = c.avatar ? `<img src="${esc(c.avatar)}" alt="">` : esc(c.initials);
+
+    this.renderMessages();
+    this.showView('viewChat');
+  },
+
+  renderMessages(){
+    const wrap = $('#messages');
+    const id = this.state.currentChat;
+    const arr = (DB.messages[id] || []).slice().sort((a,b) => a.ts - b.ts);
+
+    if (!arr.length){
+      wrap.innerHTML = `<div class="empty">Belum ada pesan. Mulai percakapan!</div>`;
+      return;
+    }
+
+    let html = '';
+    let lastDay = '';
+    arr.forEach(m => {
+      const day = fmtDay(m.ts);
+      if (day !== lastDay){
+        html += `<div class="date">${esc(day)}</div>`;
+        lastDay = day;
+      }
+      html += this.renderMessage(m);
+    });
+    wrap.innerHTML = html;
+    this.scrollMessages();
+    this.bindMessageActions();
+  },
+
+  renderMessage(m){
+    const cls = m.side === 'out' ? 'out' : 'in';
+    let body = '';
+
+    if (m.image)      body = `<img src="${esc(m.image)}" alt="">`;
+    else if (m.video) body = `<video src="${esc(m.video)}" controls></video>`;
+    else if (m.audio) body = `<audio src="${esc(m.audio)}" controls></audio>`;
+    else if (m.file)  body = `<div>📎 <a href="${esc(m.file)}" download="${esc(m.fileName||'file')}">${esc(m.fileName||'Dokumen')}</a></div>`;
+    else if (m.location) body = `<div>📍 ${esc(m.location)}</div>`;
+    else if (m.contact)  body = `<div>👤 ${esc(m.contact)}</div>`;
+    else body = esc(m.text||'');
+
+    return `
+      <div class="msg ${cls}" data-id="${m.id}">
+        ${body}
+        <div class="stamp">${fmtTime(m.ts)} ${m.side==='out' ? (m.status==='read'?'✓✓':'✓') : ''}</div>
+        <div class="msg-actions">
+          <button data-act="reply">↩</button>
+          <button data-act="copy">⧉</button>
+          <button data-act="del">🗑</button>
+        </div>
+      </div>
+    `;
+  },
+
+  bindMessageActions(){
+    $$('#messages .msg-actions button').forEach(b => {
+      b.addEventListener('click', e => {
+        e.stopPropagation();
+        const msgEl = b.closest('.msg');
+        const id = msgEl.dataset.id;
+        const act = b.dataset.act;
+        this.messageAction(id, act);
+      });
+    });
+  },
+
+  messageAction(id, act){
+    const cid = this.state.currentChat;
+    const arr = DB.messages[cid] || [];
+    const idx = arr.findIndex(m => m.id === id);
+    if (idx < 0) return;
+    const m = arr[idx];
+
+    if (act === 'copy'){
+      navigator.clipboard?.writeText(m.text || '').then(
+        () => toast('Disalin'),
+        () => toast('Gagal menyalin')
+      );
+    } else if (act === 'del'){
+      arr.splice(idx, 1);
+      saveMessages();
+      this.renderMessages();
+      toast('Pesan dihapus');
+    } else if (act === 'reply'){
+      const inp = $('#msgInput');
+      inp.value = '↩ ' + (m.text || 'media') + ' — ';
+      inp.focus();
+    }
+  },
+
+  scrollMessages(){
+    const wrap = $('#messages');
+    if (wrap) wrap.scrollTop = wrap.scrollHeight;
+  },
+
+  pushMessage(m){
+    const cid = this.state.currentChat;
+    if (!cid) return;
+    if (!DB.messages[cid]) DB.messages[cid] = [];
+    DB.messages[cid].push(m);
+
+    const c = DB.chats.find(x => x.id === cid);
+    if (c){ c.last = m.text || (m.image?'📷 Foto':m.video?'🎬 Video':m.audio?'🎤 Audio':'📎 Media'); c.time = m.ts; }
+    saveChats(); saveMessages();
+    this.renderMessages();
+    this.renderChats();
+  },
+
+  sendText(){
+    const inp = $('#msgInput');
+    const txt = inp.value.trim();
+    if (!txt) return;
+    this.pushMessage({ id:uid(), side:'out', text:txt, ts:now(), status:'sent' });
+    inp.value = '';
+    setTimeout(() => {
+      if (!this.state.currentChat) return;
+      this.pushMessage({ id:uid(), side:'in', text:'👍', ts:now(), status:'read' });
+    }, 900);
+  },
+
+  handleAttach(kind){
+    const cid = this.state.currentChat;
+    if (!cid) return;
+
+    if (kind === 'image'){
+      const inp = document.createElement('input');
+      inp.type = 'file'; inp.accept = 'image/*';
+      inp.onchange = () => this.readAsDataUrl(inp.files[0], url =>
+        this.pushMessage({ id:uid(), side:'out', image:url, ts:now(), status:'sent' }));
+      inp.click();
+    } else if (kind === 'video'){
+      const inp = document.createElement('input');
+      inp.type = 'file'; inp.accept = 'video/*';
+      inp.onchange = () => this.readAsDataUrl(inp.files[0], url =>
+        this.pushMessage({ id:uid(), side:'out', video:url, ts:now(), status:'sent' }));
+      inp.click();
+    } else if (kind === 'audio'){
+      if (this.state.recording) this.stopRecording();
+      else this.startRecording();
+    } else if (kind === 'camera'){
+      this.openCamera();
+    } else if (kind === 'doc'){
+      const inp = document.createElement('input');
+      inp.type = 'file';
+      inp.onchange = () => {
+        const f = inp.files[0]; if (!f) return;
+        this.readAsDataUrl(f, url =>
+          this.pushMessage({ id:uid(), side:'out', file:url, fileName:f.name, ts:now(), status:'sent' }));
+      };
+      inp.click();
+    } else if (kind === 'location'){
+      if (navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(
+          p => this.pushMessage({ id:uid(), side:'out',
+            location: p.coords.latitude.toFixed(5)+', '+p.coords.longitude.toFixed(5),
+            ts:now(), status:'sent' }),
+          () => toast('Gagal mengambil lokasi')
+        );
+      } else toast('Geolokasi tidak didukung');
+    } else if (kind === 'contact'){
+      this.pushMessage({ id:uid(), side:'out', contact: DB.user?.name || 'Kontak', ts:now(), status:'sent' });
+    } else if (kind === 'sticker'){
+      $('#stickerGrid').scrollIntoView({behavior:'smooth'});
+      return;
+    }
+    $('#attachPanel').classList.remove('show');
+  },
+
+  readAsDataUrl(file, cb){
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = () => cb(r.result);
+    r.readAsDataURL(file);
+  },
+
+  renderStickers(){
+    $('#stickerGrid').innerHTML = STICKERS.map(s => `<button class="sticker">${s}</button>`).join('');
+  },
+
+  /* ---------- RECORDING ---------- */
+  async startRecording(){
+    if (!navigator.mediaDevices?.getUserMedia) return toast('Perekam tidak didukung');
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      this.state.mediaStream = stream;
+      const chunks = [];
+      const rec = new MediaRecorder(stream);
+      rec.ondataavailable = e => chunks.push(e.data);
+      rec.onstop = () => {
+        const blob = new Blob(chunks, {type: 'audio/webm'});
+        const url = URL.createObjectURL(blob);
+        this.pushMessage({ id:uid(), side:'out', audio:url, ts:now(), status:'sent' });
+        stream.getTracks().forEach(t => t.stop());
+        this.state.recording = false;
+        this.state.mediaStream = null;
+        $('#btnAttach').classList.remove('recording');
+        $('#btnAttach').textContent = '＋';
+      };
+      rec.start();
+      this.state.mediaRecorder = rec;
+      this.state.recording = true;
+      $('#btnAttach').classList.add('recording');
+      $('#btnAttach').textContent = '⏺';
+      toast('Merekam... klik lagi untuk berhenti');
+    } catch(e){
+      toast('Izin mikrofon ditolak');
+    }
+  },
+
+  stopRecording(silent){
+    if (this.state.mediaRecorder && this.state.recording){
+      try { this.state.mediaRecorder.stop(); } catch(e){}
+    } else if (silent && this.state.mediaStream){
+      this.state.mediaStream.getTracks().forEach(t => t.stop());
+    }
+    this.state.recording = false;
+    $('#btnAttach').classList.remove('recording');
+    $('#btnAttach').textContent = '＋';
+  },
+
+  /* ---------- CAMERA ---------- */
+  bindCamera(){
+    $('#cameraClose').addEventListener('click', () => this.closeCamera());
+    $('#cameraShot').addEventListener('click', () => this.takePhoto());
+  },
+
+  async openCamera(){
+    if (!navigator.mediaDevices?.getUserMedia) return toast('Kamera tidak didukung');
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+      this.state.cameraStream = stream;
+      const v = $('#cameraVideo');
+      v.srcObject = stream;
+      $('#modalCamera').classList.add('show');
+    } catch(e){
+      toast('Izin kamera ditolak');
+    }
+  },
+
+  closeCamera(){
+    if (this.state.cameraStream){
+      this.state.cameraStream.getTracks().forEach(t => t.stop());
+      this.state.cameraStream = null;
+    }
+    $('#modalCamera').classList.remove('show');
+  },
+
+  takePhoto(){
+    const v = $('#cameraVideo');
+    const c = document.createElement('canvas');
+    c.width = v.videoWidth; c.height = v.videoHeight;
+    c.getContext('2d').drawImage(v, 0, 0);
+    const url = c.toDataURL('image/png');
+    this.pushMessage({ id:uid(), side:'out', image:url, ts:now(), status:'sent' });
+    this.closeCamera();
+  },
+
+  /* ---------- CHAT MENU ---------- */
+  chatMenu(){
+    const c = DB.chats.find(x => x.id === this.state.currentChat);
+    if (!c) return;
+    this.openModal(`
+      <h2>${esc(c.name)}</h2>
+      <button class="rowbtn" data-act="mute">🔕 Bisukan</button>
+      <button class="rowbtn" data-act="pin">📌 ${c.pinned?'Lepas pin':'Pin chat'}</button>
+      <button class="rowbtn" data-act="clear">🧹 Bersihkan pesan</button>
+      <button class="rowbtn danger" data-act="delete">🗑️ Hapus chat</button>
+    `);
+    $$('#modalContent [data-act]').forEach(b => {
+      b.addEventListener('click', () => {
+        const act = b.dataset.act;
+        if (act === 'pin'){ c.pinned = !c.pinned; saveChats(); this.renderChats(); }
+        if (act === 'clear'){ DB.messages[c.id] = []; saveMessages(); this.renderMessages(); }
+        if (act === 'delete'){
+          DB.chats = DB.chats.filter(x => x.id !== c.id);
+          delete DB.messages[c.id];
+          saveChats(); saveMessages(); this.renderChats(); this.showView('viewHome');
+        }
+        if (act === 'mute') toast('Chat dibisukan');
+        this.closeModal();
+      });
+    });
+  },
+
+  /* ---------- PROFILE ---------- */
+  bindProfile(){
+    $('#profileMain').addEventListener('click', e => {
+      const r = e.target.closest('[data-nav]');
+      if (!r) return;
+      this.openSub(r.dataset.nav);
+    });
+
+    $('#btnLogout').addEventListener('click', () => {
+      if (!confirm('Keluar dari akun ini?')) return;
+      DB.user = null; saveUser();
+      $('#mainApp').classList.add('hidden');
+      $('#authGate').classList.remove('hidden');
+      AUTH.goStep('phone');
+      $('#authPhone').value = '';
+    });
+  },
+
+  renderProfile(){
+    if (!DB.user) return;
+    $('#profileName').textContent = DB.user.name;
+    $('#profilePhone').textContent = DB.user.phone;
+    const av = $('#profileBigAvatar');
+    av.innerHTML = DB.user.avatar
+      ? `<img src="${esc(DB.user.avatar)}" alt="">`
+      : esc(DB.user.initials || 'U');
+  },
+
+  showProfileMain(){
+    $('#profileMain').classList.remove('hidden');
+    $('#profileSub').classList.add('hidden');
+    $('#profileSub').innerHTML = '';
+    this.renderProfile();
+  },
+
+  openSub(key){
+    const map = {
+      editProfile:   () => this.subEditProfile(),
+      privacy:       () => this.subPrivacy(),
+      security:      () => this.subSecurity(),
+      notifications: () => this.subNotifications(),
+      appearance:    () => this.subAppearance(),
+      storage:       () => this.subStorage(),
+      language:      () => this.subLanguage(),
+      help:          () => this.subHelp(),
+      about:         () => this.subAbout()
+    };
+    const fn = map[key];
+    if (fn) fn();
+  },
+
+  subHeader(title){
+    return `
+      <div class="settingBack">
+        <button id="subBack">‹</button>
+        <h2 style="margin:0;font-size:22px">${esc(title)}</h2>
+      </div>
+    `;
+  },
+
+  mountSub(html){
+    $('#profileMain').classList.add('hidden');
+    const sub = $('#profileSub');
+    sub.classList.remove('hidden');
+    sub.innerHTML = html;
+    $('#subBack').addEventListener('click', () => this.showProfileMain());
+  },
+
+  subEditProfile(){
+    const u = DB.user;
+    this.mountSub(`
+      ${this.subHeader('Edit Profil')}
+      <div class="profileEdit">
+        <div class="editAvatar" id="editAvatar">
+          ${u.avatar ? `<img src="${esc(u.avatar)}" alt="">` : esc(u.initials||'U')}
+        </div>
+        <input class="profileMediaInput" id="avatarInput" type="file" accept="image/*">
+        <button class="rowbtn" id="btnAvatarPick">📷 GANTI FOTO</button>
+      </div>
+      <div class="settingCard">
+        <h3>Nama</h3>
+        <input class="field" id="editName" value="${esc(u.name)}">
+      </div>
+      <div class="settingCard">
+        <h3>Info</h3>
+        <input class="field" id="editAbout" value="${esc(u.about||'')}">
+      </div>
+      <button class="rowbtn" id="btnSaveProfile">SIMPAN</button>
+    `);
+
+    $('#btnAvatarPick').addEventListener('click', () => $('#avatarInput').click());
+    $('#avatarInput').addEventListener('change', e => {
+      const f = e.target.files[0]; if (!f) return;
+      this.readAsDataUrl(f, url => {
+        u.avatar = url; saveUser();
+        $('#editAvatar').innerHTML = `<img src="${esc(url)}" alt="">`;
+      });
+    });
+    $('#btnSaveProfile').addEventListener('click', () => {
+      u.name = $('#editName').value.trim() || u.name;
+      u.about = $('#editAbout').value.trim();
+      saveUser();
+      toast('Profil tersimpan');
+      this.showProfileMain();
+    });
+  },
+
+  subPrivacy(){
+    const p = DB.settings.privacy;
+    const opt = (val, cur) => `<button class="optionBtn ${cur===val?'on':''}" data-v="${val}">${val.toUpperCase()}</button>`;
+    this.mountSub(`
+      ${this.subHeader('Privasi')}
+      <div class="settingCard">
+        <h3>Terakhir dilihat</h3>
+        <div class="optionGrid" data-key="lastSeen">
+          ${opt('everyone', p.lastSeen)}
+          ${opt('contacts', p.lastSeen)}
+        </div>
+      </div>
+      <div class="settingCard">
+        <h3>Foto profil</h3>
+        <div class="optionGrid" data-key="profilePhoto">
+          ${opt('everyone', p.profilePhoto)}
+          ${opt('contacts', p.profilePhoto)}
+        </div>
+      </div>
+      <div class="settingCard">
+        <h3>Tentang</h3>
+        <div class="optionGrid" data-key="about">
+          ${opt('everyone', p.about)}
+          ${opt('contacts', p.about)}
+        </div>
+      </div>
+      <div class="settingCard">
+        <h3>Status</h3>
+        <div class="optionGrid" data-key="status">
+          ${opt('everyone', p.status)}
+          ${opt('contacts', p.status)}
+        </div>
+      </div>
+      <div class="settingRow" style="cursor:default">
+        <div class="sicon">✓✓</div>
+        <div class="stxt"><strong>Laporan dibaca</strong><small>Kirim centang biru</small></div>
+        <input type="checkbox" class="settingToggle" id="toggleRead" ${p.readReceipts?'checked':''}>
+      </div>
+    `);
+    this.bindOptions('privacy');
+    $('#toggleRead').addEventListener('change', e => {
+      DB.settings.privacy.readReceipts = e.target.checked; saveSettings();
+    });
+  },
+
+  subSecurity(){
+    const s = DB.settings.security;
+    this.mountSub(`
+      ${this.subHeader('Keamanan')}
+      <div class="settingRow" style="cursor:default">
+        <div class="sicon">🔐</div>
+        <div class="stxt"><strong>Verifikasi 2 langkah</strong><small>Tambahan PIN saat login</small></div>
+        <input type="checkbox" class="settingToggle" id="tgl2fa" ${s.twoFactor?'checked':''}>
+      </div>
+      <div class="settingRow" style="cursor:default">
+        <div class="sicon">🖐️</div>
+        <div class="stxt"><strong>Biometrik</strong><small>Sidik jari / wajah</small></div>
+        <input type="checkbox" class="settingToggle" id="tglBio" ${s.biometric?'checked':''}>
+      </div>
+      <div class="settingRow" style="cursor:default">
+        <div class="sicon">🔔</div>
+        <div class="stxt"><strong>Notifikasi keamanan</strong><small>Peringatan login mencurigakan</small></div>
+        <input type="checkbox" class="settingToggle" id="tglSec" ${s.showSecurityNotifications?'checked':''}>
+      </div>
+      <button class="rowbtn" id="btnChangePin">GANTI PIN</button>
+    `);
+    $('#tgl2fa').addEventListener('change', e => { DB.settings.security.twoFactor=e.target.checked; saveSettings(); });
+    $('#tglBio').addEventListener('change', e => { DB.settings.security.biometric=e.target.checked; saveSettings(); });
+    $('#tglSec').addEventListener('change', e => { DB.settings.security.showSecurityNotifications=e.target.checked; saveSettings(); });
+    $('#btnChangePin').addEventListener('click', () => toast('Fitur ganti PIN (demo)'));
+  },
+
+  subNotifications(){
+    const n = DB.settings.notifications;
+    this.mountSub(`
+      ${this.subHeader('Notifikasi')}
+      <div class="settingRow" style="cursor:default">
+        <div class="sicon">💬</div>
+        <div class="stxt"><strong>Pesan</strong><small>Notifikasi pesan masuk</small></div>
+        <input type="checkbox" class="settingToggle" id="nMsg" ${n.messages?'checked':''}>
+      </div>
+      <div class="settingRow" style="cursor:default">
+        <div class="sicon">👥</div>
+        <div class="stxt"><strong>Grup</strong><small>Notifikasi grup</small></div>
+        <input type="checkbox" class="settingToggle" id="nGrp" ${n.groups?'checked':''}>
+      </div>
+      <div class="settingRow" style="cursor:default">
+        <div class="sicon">📞</div>
+        <div class="stxt"><strong>Panggilan</strong><small>Notifikasi panggilan</small></div>
+        <input type="checkbox" class="settingToggle" id="nCall" ${n.calls?'checked':''}>
+      </div>
+      <div class="settingRow" style="cursor:default">
+        <div class="sicon">🔊</div>
+        <div class="stxt"><strong>Suara</strong><small>Nada notifikasi</small></div>
+        <input type="checkbox" class="settingToggle" id="nSnd" ${n.sounds?'checked':''}>
+      </div>
+      <div class="settingRow" style="cursor:default">
+        <div class="sicon">👁️</div>
+        <div class="stxt"><strong>Pratinjau</strong><small>Tampilkan isi pesan</small></div>
+        <input type="checkbox" class="settingToggle" id="nPrev" ${n.preview?'checked':''}>
+      </div>
+    `);
+    const map = {nMsg:'messages',nGrp:'groups',nCall:'calls',nSnd:'sounds',nPrev:'preview'};
+    Object.entries(map).forEach(([id,key]) => {
+      $('#'+id).addEventListener('change', e => {
+        DB.settings.notifications[key] = e.target.checked; saveSettings();
+      });
+    });
+  },
+
+  subAppearance(){
+    const a = DB.settings.appearance;
+    const themeBtn = v => `<button class="optionBtn ${a.theme===v?'on':''}" data-v="${v}">${v.toUpperCase()}</button>`;
+    const wpBtn    = v => `<button class="optionBtn ${a.wallpaper===v?'on':''}" data-v="${v}">${v.toUpperCase()}</button>`;
+    const fsBtn    = v => `<button class="optionBtn ${a.fontSize===v?'on':''}" data-v="${v}">${v.toUpperCase()}</button>`;
+    this.mountSub(`
+      ${this.subHeader('Tampilan')}
+      <div class="settingCard">
+        <h3>Tema</h3>
+        <div class="optionGrid" data-key="theme">
+          ${themeBtn('light')}${themeBtn('dark')}
+        </div>
+      </div>
+      <div class="settingCard">
+        <h3>Wallpaper</h3>
+        <div class="optionGrid" data-key="wallpaper">
+          ${wpBtn('default')}${wpBtn('dots')}${wpBtn('solid')}${wpBtn('yellow')}
+        </div>
+      </div>
+      <div class="settingCard">
+        <h3>Ukuran huruf</h3>
+        <div class="optionGrid" data-key="fontSize">
+          ${fsBtn('normal')}${fsBtn('large')}
+        </div>
+      </div>
+    `);
+    this.bindOptions('appearance');
+  },
+
+  subStorage(){
+    const s = DB.settings.storage;
+    this.mountSub(`
+      ${this.subHeader('Penyimpanan')}
+      <div class="settingRow" style="cursor:default">
+        <div class="sicon">⬇️</div>
+        <div class="stxt"><strong>Unduh otomatis</strong><small>Media otomatis diunduh</small></div>
+        <input type="checkbox" class="settingToggle" id="stAuto" ${s.autoDownload?'checked':''}>
+      </div>
+      <div class="settingRow" style="cursor:default">
+        <div class="sicon">🖼️</div>
+        <div class="stxt"><strong>Simpan ke galeri</strong><small>Media tersimpan otomatis</small></div>
+        <input type="checkbox" class="settingToggle" id="stGal" ${s.saveToGallery?'checked':''}>
+      </div>
+      <button class="rowbtn" id="btnClearAll">🧹 BERSIHKAN SEMUA PESAN</button>
+    `);
+    $('#stAuto').addEventListener('change', e => { DB.settings.storage.autoDownload=e.target.checked; saveSettings(); });
+    $('#stGal').addEventListener('change', e => { DB.settings.storage.saveToGallery=e.target.checked; saveSettings(); });
+    $('#btnClearAll').addEventListener('click', () => {
+      if (!confirm('Hapus semua pesan di semua chat?')) return;
+      Object.keys(DB.messages).forEach(k => DB.messages[k] = []);
+      saveMessages();
+      toast('Semua pesan dibersihkan');
+    });
+  },
+
+  subLanguage(){
+    const langs = [
+      {v:'id', n:'Indonesia'},
+      {v:'en', n:'English'},
+      {v:'jv', n:'Jawa'},
+      {v:'su', n:'Sunda'}
+    ];
+    this.mountSub(`
+      ${this.subHeader('Bahasa')}
+      ${langs.map(l => `
+        <button class="settingRow" data-lang="${l.v}">
+          <div class="sicon">🌐</div>
+          <div class="stxt"><strong>${l.n}</strong><small>${l.v.toUpperCase()}</small></div>
+          <div class="chev">${DB.settings.language===l.v?'✓':''}</div>
+        </button>
+      `).join('')}
+    `);
+    $$('#profileSub [data-lang]').forEach(b => {
+      b.addEventListener('click', () => {
+        DB.settings.language = b.dataset.lang;
+        saveSettings();
+        toast('Bahasa diubah ke ' + b.dataset.lang.toUpperCase());
+        this.subLanguage();
+      });
+    });
+  },
+
+  subHelp(){
+    this.mountSub(`
+      ${this.subHeader('Bantuan')}
+      <div class="settingCard">
+        <h3>FAQ</h3>
+        <p class="muted">1. Bagaimana cara mengirim OTP?<br>Masukkan nomor lalu klik KIRIM OTP.</p>
+        <p class="muted">2. Bagaimana mengirim media?<br>Gunakan tombol ＋ di composer.</p>
+        <p class="muted">3. Bagaimana logout?<br>Profil → Keluar.</p>
+      </div>
+      <div class="settingCard">
+        <h3>Kontak Dukungan</h3>
+        <p class="muted">support@allchat.example</p>
+      </div>
+    `);
+  },
+
+  subAbout(){
+    this.mountSub(`
+      ${this.subHeader('Tentang')}
+      <div class="settingCard" style="text-align:center">
+        <div class="logo" style="margin:0 auto 12px">
+          <svg class="brand-logo-img" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="22" fill="#ffc928"/>
+            <path d="M25 35 h50 v30 a8 8 0 0 1 -8 8 H42 l-12 10 v-10 h-5 a8 8 0 0 1 -8 -8 z" fill="#000"/>
+            <circle cx="40" cy="52" r="4" fill="#ffc928"/>
+            <circle cx="52" cy="52" r="4" fill="#ffc928"/>
+            <circle cx="64" cy="52" r="4" fill="#ffc928"/>
+          </svg>
+        </div>
+        <h3 style="margin:0">ALL CHAT</h3>
+        <p class="muted">Versi 1.0.0 — Yellow Brutalist</p>
+        <p class="muted">© 2026</p>
+      </div>
+    `);
+  },
+
+  bindOptions(key){
+    $$('#profileSub .optionGrid').forEach(grid => {
+      grid.addEventListener('click', e => {
+        const b = e.target.closest('.optionBtn');
+        if (!b) return;
+        const k = grid.dataset.key;
+        DB.settings[key][k] = b.dataset.v;
+        saveSettings();
+        $$('.optionBtn', grid).forEach(x => x.classList.toggle('on', x === b));
+      });
+    });
+  },
+
+  /* ---------- MODAL ---------- */
+  bindModal(){
+    $('#modalClose').addEventListener('click', () => this.closeModal());
+    $('#modalGeneric').addEventListener('click', e => {
+      if (e.target.id === 'modalGeneric') this.closeModal();
+    });
+  },
+
+  openModal(html){
+    $('#modalContent').innerHTML = html;
+    $('#modalGeneric').classList.add('show');
+  },
+  closeModal(){
+    $('#modalGeneric').classList.remove('show');
+    $('#modalContent').innerHTML = '';
+  }
+};
+
+/* =====================================================
+   START
+===================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  loadDB();
+  AUTH.init();
+
+  setTimeout(() => {
+    $('#splashScreen').classList.add('hide');
+    AUTH.checkExisting();
+  }, 1200);
+});
+
+})();
+</script>
+</body>
+</html>
